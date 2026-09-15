@@ -1,8 +1,8 @@
 {
     "name": "council-review",
     "owner": {
-          "name": "Aayush Gandhi",
-          "email": "aaygan29@gmail.com"
+          "name": "The authors",
+          "email": "anonymous@example.com"
     },
     "plugins": [
           {
