@@ -1,6 +1,30 @@
-# council_of_elrond
+# Council of Elrond
 
-An empirical, adversarial research-review tool for Claude. It convenes a fixed panel of skeptics and withholds a verdict until the work has survived a hard empirical gate ladder, so a weak finding can fail here, in private, rather than later.
+An empirical, adversarial research-review tool (Claude Code skill) for any quantitative empirical claim. It convenes a fixed panel of skeptics and withholds a verdict until the work has survived a hard empirical gate ladder, so a weak finding can fail here, in private, rather than in front of a reviewer or after publication.
+
+It is domain-tuned for in-silico neuroscience / neuro-AI, but the gate ladder is general: any paper, proposal, preregistration, results file, or code artifact that makes a quantitative claim can be reviewed with it, and it maps onto clinical/biomedical reporting standards (CONSORT, STROBE, PRISMA, ARRIVE).
+
+## Install
+
+Requires [Claude Code](https://code.claude.com). Add this repo as a plugin marketplace, then install the plugin:
+
+```bash
+claude plugin marketplace add aaygan29/council-of-elrond
+```
+
+```bash
+claude plugin install council-review@council-review
+```
+
+Then invoke it in any Claude Code session, either by slash command or in plain language:
+
+```
+/council-review review my paper at ./draft.md before I submit to NeurIPS
+```
+
+It also triggers automatically on requests like *"is this finding real?"*, *"would this survive more seeds?"*, *"am I overclaiming?"*, *"tear this apart"*, or *"review my results"* — pointed at a manuscript, a results file, or a code+results directory.
+
+See [`examples/example-review.md`](examples/example-review.md) for a full sample review on a fictional manuscript.
 
 ## What it does
 
@@ -9,6 +33,7 @@ An empirical, adversarial research-review tool for Claude. It convenes a fixed p
   - **Live artifacts** (code, results files, notebooks, statistical output): recomputes headline numbers from the source files instead of trusting the prose. A number in the text that disagrees with its source file is flagged.
 - Runs a twelve-seat skeptic panel (eight standing + four specialists) and an extended gate ladder. The empirical core (Gates 0-6) asks whether the finding is real: provenance/leakage, seed variance, specification robustness, specificity, confound control, mechanism/necessity, claim calibration. The methodology-completeness tier (Gates 7-11) asks whether the study was well built and reported: external validity/generalization, measurement validity and reliability, reproducibility/computational provenance, ethics/safety/responsible disclosure, and analytic integrity (preregistration, confirmatory-vs-exploratory). Each seat maps to a distinct pillar of experimental methodology, so the panel covers a study end to end.
 - **Quantitative error analysis.** For every headline number it does the arithmetic a hostile methods reviewer would: which error is at risk here (Type I false positive vs Type II underpowered null), the multiple-comparisons expectation and binomial by-chance tail, survivors after correction, minimum detectable effect size, positive predictive value at the true prior, statcheck/GRIM consistency, p-curve/caliper p-hacking screens, and leave-one-out fragility. Adjectives are not allowed to stand in for the computed bound. See `statistical-robustness.md`.
+- **Conditional multiverse robustness (Gate M).** For in-silico neuro/AI work (and only there), it extends specification robustness from a few spot-checked alternatives to a systematically enumerated analytical multiverse - preprocessing, parcellation/ROI, embedding/checkpoint, alignment metric, correction - and reports the fraction of that space in which the effect survives. Non neuro/AI work marks it N/A.
 - **Conditional figure review (Gate F).** When (and only when) the work contains figures, it judges each one on message/takeaway, honesty of the visual encoding (truncated axes, missing error bars, absent chance line), readability/colorblind-safety, and claim-figure correspondence. A figure that quietly contradicts a central claim is a Blocker. Text-only drafts skip it. See `figure-review.md`.
 - **Optional NeurIPS-style score (Gate S).** When a NeurIPS-style venue is named or a rating is requested, Elrond translates the verdict onto the five-axis reviewer form - Soundness /4, Presentation /4, Contribution /4, Overall /10, Confidence /5. Every axis cites a gate result or a named finding, the Overall sits inside the verdict's band (REJECT 1-4, MAJOR REVISION 4-6, ACCEPT 6-9), and the score never overrides the ACCEPT/MAJOR REVISION/REJECT decision. See `neurips-scoring.md`.
 - **Every gate has a reviewer.** Each gate is owned by a named Council seat accountable for that failure mode, so no failure mode is anyone's spare-time job. The full roster is in [The Council](#the-council) below.
@@ -27,7 +52,7 @@ A lone reviewer has blind spots: they wave through an overclaim because the meth
 | Seat | Rules over | Why that gate matters |
 |---|---|---|
 | **Elrond** — Convener & Statistician | **Gate T** (theoretical soundness) · **Gate S** (venue scoring) · verdict synthesis | Aggregates every seat's objection into the ACCEPT/MAJOR REVISION/REJECT decision, checks the statistics under it, validates any formal/mathematical claim, and — when a venue is named — translates the verdict onto the NeurIPS five-axis score. A wrong synthesis or an ungrounded score is the review's own failure. |
-| **Gandalf** — Replication Skeptic | **Gate 1** (variance) · **Gate 2** (specification robustness) | The most common way a finding is fake: a dramatic single run that is really seed variance, or a result that lives at exactly one hyperparameter. If it does not survive twenty seeds and a sweep of reasonable choices, it is noise in a costume. |
+| **Gandalf** — Replication Skeptic | **Gate 1** (variance) · **Gate 2** (specification robustness) · **Gate M** (multiverse, neuro/AI only) | The most common way a finding is fake: a dramatic single run that is really seed variance, or a result that lives at exactly one hyperparameter. If it does not survive twenty seeds and a sweep of reasonable choices, it is noise in a costume. For in-silico neuro/AI work he escalates Gate 2 to a full analytical multiverse (Gate M). |
 | **Aragorn** — Provenance Auditor | **Gate 0** (provenance, leakage, baselines) | If the ground is not real, nothing above it can be. Synthetic data read as biology, test-set leakage, or a score with no chance baseline makes every downstream gate moot — which is why Gate 0 is terminal. |
 | **Galadriel** — Construct & Measurement Validity | **Gate 4** (confounds) · **Gate 8** (measurement validity & reliability) | A metric that measures a convenient proxy instead of the named construct, or an effect that is really an effect of size/length/frequency, produces a "result" about the wrong thing. If the instrument is unreliable, the effect may be noise it lets through. |
 | **Boromir** — Overclaim Sentinel | **Gate 6** (claim calibration) | The gap between what was shown and what is said is where papers die in review. "Causes/drives/enables" needs intervention, not correlation; in-silico is not in-vivo. Language must never exceed the evidence tier. |
