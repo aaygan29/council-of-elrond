@@ -39,7 +39,7 @@ fixed panel of skeptics who each attack from one angle - and forces the work
 through an **empirical gate ladder** before any verdict is allowed.
 
 The gates are not generic peer-review etiquette. They encode the empirical
-discipline that has actually killed real findings in this user's own work:
+discipline that has actually killed real in-silico findings:
 
 - A headline single-run improvement that turned out to be **seed variance**
   (Cohen's *d* = -1.20 across 20 seeds once tested properly).
