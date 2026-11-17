@@ -8,7 +8,7 @@
           {
                   "name": "council-review",
                   "source": "./plugins/council-review",
-                  "version": "0.4.0",
+                  "version": "0.4.1",
                   "description": "Empirical, adversarial research review. Convenes a Council of Elrond reviewer panel and judges a scientific work against a hard empirical gate ladder, emitting an ACCEPT / MAJOR REVISION / REJECT verdict with severity-ranked findings and the single experiment that would change the verdict. Works on manuscripts and on live code+results, for any quantitative empirical claim."
           }
     ]
