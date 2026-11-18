@@ -1,32 +1,20 @@
 ---
 name: council-review
 description: >-
-  Empirical, adversarial research review. Convenes a "Council of Elrond" - a
-  standing panel of skeptical reviewers - and judges a scientific work against a
-  hard empirical gate ladder (provenance/leakage, seed-variance, specification
-  robustness, specificity ablation, confound control, mechanism/necessity, claim
-  calibration). Reviews BOTH manuscripts (papers, proposals, preregistrations,
-  drafts in md/pdf/docx) AND live artifacts (code, results JSON, statistical
-  output). Emits an ACCEPT / MAJOR REVISION / REJECT decision plus
-  severity-ranked findings and the single experiment that would change the
-  verdict. Use this whenever the user wants a rigorous critique of a paper,
-  proposal, experiment, result, or claim - especially in-silico neuro/AI work -
-  or asks any of: "is this finding real?", "would this survive more seeds?",
-  "am I overclaiming?", "is this publishable?", "tear this apart", "review my
-  results", "is my method sound?", "what's wrong with this experiment?". Trigger
-  even when the user doesn't say the word "review" but is clearly asking for
-  empirical scrutiny of a scientific claim or artifact. Runs a twelve-seat panel and
-  an extended gate ladder covering provenance, variance, robustness, specificity,
-  confounds, mechanism, calibration, external validity, measurement reliability,
-  reproducibility, ethics/safety, and analytic integrity/preregistration; a
-  quantitative Type I/II error-analysis pass; a conditional figure-integrity review
-  that fires only when figures are present; a conditional multiverse-robustness gate
-  that fires only when the work deals with the brain, AI, or both; and a development
-  mode that gives
-  generative paper-writing feedback and a Reviewer-2 pre-mortem alongside the verdict;
-  and an optional NeurIPS-style five-axis score (Soundness, Presentation, Contribution,
-  Overall, Confidence) that translates the verdict onto a venue scale when a
-  NeurIPS-style venue is named or a rating is requested.
+  Empirical, adversarial research review. Convenes a "Council of Elrond" panel
+  of skeptical reviewers and judges a scientific work against a hard empirical
+  gate ladder (provenance/leakage, seed variance, specification robustness,
+  specificity, confound control, mechanism, claim calibration) plus
+  methodology, reproducibility, ethics, and figure gates. Reviews BOTH
+  manuscripts (papers, proposals, preregistrations) AND live artifacts (code,
+  results JSON, stats output). Emits an ACCEPT / MAJOR REVISION / REJECT
+  decision with severity-ranked findings and the single experiment that would
+  change the verdict. Use whenever the user wants rigorous critique of a
+  paper, proposal, experiment, result, or claim (especially in-silico
+  neuro/AI), or asks: "is this finding real?", "would this survive more
+  seeds?", "am I overclaiming?", "tear this apart", "is my method sound?".
+  Trigger even without the word "review" when the user clearly wants empirical
+  scrutiny of a scientific claim or artifact.
 ---
 
 # Council Review
@@ -109,6 +97,16 @@ Infer the review's depth from the user's phrasing, or ask in one line if unclear
 - **Deep** (exhaustive audit / "tear it apart completely") - everything in Standard
   plus orchestrated literature/verification lookups, recompute every checkable
   number, convene all specialists, and run the reviewer self-guard explicitly.
+
+**Executing the user's code is opt-in.** Recomputing a number from a static
+results file, notebook output, or statistical table needs no permission - that
+is reading. But *running the user's code* (e.g. re-executing a training or
+analysis script via `verification-loop`) can have side effects - it can write
+files, hit the network, cost compute, or mutate state. Never run it silently:
+do it only when the user has asked for it or after you confirm in one line
+("re-run `train.py` to verify the headline? it will train for ~N steps"). When
+the user declines or is absent, mark the number **evidence-blocked** rather than
+executing to fill the gap. This holds at every scope, Deep included.
 
 Empirical rigor (never rubber-stamp) is constant across levels; only breadth and
 orchestration scale.
@@ -286,7 +284,8 @@ See `references/orchestration.md` for the routing table. In short:
 - Novelty / prior-art → `literature-review` or `deep-research`
 - Biomedical claims, citation verification → `pubmed-database`
 - Scholarly-writing quality → `scholar-evaluation`
-- Recomputing code/results → `verification-loop`
+- Recomputing code/results → `verification-loop` (running the user's code is
+  opt-in: ask or confirm first, per "Executing the user's code is opt-in" above)
 
 ### 6. Render the verdict
 
